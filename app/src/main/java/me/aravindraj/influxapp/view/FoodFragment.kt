@@ -10,15 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.aravindraj.influxapp.R
-
-import me.aravindraj.influxapp.view.DummyContent.DummyItem
+import me.aravindraj.influxapp.data.model.Fnblist
 
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [MenuFragment.OnListFragmentInteractionListener] interface.
+ * [FoodFragment.OnListFragmentInteractionListener] interface.
  */
-class MenuFragment : Fragment() {
+class FoodFragment(private val fnblist: List<Fnblist>) : Fragment() {
 
     // TODO: Customize parameters
     private var columnCount = 1
@@ -37,7 +36,7 @@ class MenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_menu_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_food, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {
@@ -46,7 +45,7 @@ class MenuFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MenuListAdapter(DummyContent.ITEMS, listener)
+                adapter = FoodListAdapter(context,fnblist, listener)
             }
         }
         return view
@@ -78,8 +77,8 @@ class MenuFragment : Fragment() {
      * for more information.
      */
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onFoodAdd()
+        fun onFoodRemove()
     }
 
     companion object {
@@ -88,12 +87,12 @@ class MenuFragment : Fragment() {
         const val ARG_COLUMN_COUNT = "column-count"
 
         // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            MenuFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
+//        @JvmStatic
+//        fun newInstance(columnCount: Int) =
+//            FoodFragment().apply {
+//                arguments = Bundle().apply {
+//                    putInt(ARG_COLUMN_COUNT, columnCount)
+//                }
+//            }
     }
 }

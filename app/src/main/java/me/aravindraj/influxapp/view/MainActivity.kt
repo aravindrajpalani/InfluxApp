@@ -18,21 +18,26 @@ import me.aravindraj.influxapp.viewmodel.MainViewModel
 import me.aravindraj.influxapp.viewmodel.ViewModelFactory
 
 class MainActivity : AppCompatActivity(),
-    MenuFragment.OnListFragmentInteractionListener {
+    FoodFragment.OnListFragmentInteractionListener {
+    override fun onFoodAdd() {
+
+
+    }
+
+    override fun onFoodRemove() {
+
+    }
 
 
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var viewModel: MainViewModel
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
 
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-         adapter = ViewPagerAdapter(supportFragmentManager)
+        adapter = ViewPagerAdapter(supportFragmentManager)
 
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
@@ -50,7 +55,7 @@ class MainActivity : AppCompatActivity(),
                         resource.data?.let { data ->
                             if (data.status.Description.equals("OK")) {
                                 data.FoodList.forEach {
-                                    adapter.addFragment(MenuFragment(), it.TabName)
+                                    adapter.addFragment(FoodFragment(it.fnblist), it.TabName)
                                 }
                                 adapter.notifyDataSetChanged()
                             }
@@ -59,7 +64,7 @@ class MainActivity : AppCompatActivity(),
                     }
                     Status.ERROR -> {
 
-                        Log.e("Status", "error")
+                        Log.e("Status", "error" + resource.message)
                     }
                     Status.LOADING -> {
                         Log.e("Status", "Loading")

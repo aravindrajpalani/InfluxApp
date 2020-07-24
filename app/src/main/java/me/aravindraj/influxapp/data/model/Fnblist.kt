@@ -4,7 +4,7 @@ data class Fnblist(
     val Cinemaid: String,
     val ImageUrl: String,
     val ImgUrl: String,
-    val ItemPrice: String,
+    var ItemPrice: String,
     val Name: String,
     val OtherExperience: String,
     val PriceInCents: String,

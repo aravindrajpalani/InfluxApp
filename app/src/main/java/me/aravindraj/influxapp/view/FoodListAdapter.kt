@@ -1,24 +1,22 @@
 package me.aravindraj.influxapp.view
 
+
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
-import com.bumptech.glide.request.RequestOptions
-import me.aravindraj.influxapp.R
-
-
-import me.aravindraj.influxapp.view.FoodFragment.OnListFragmentInteractionListener
-
 import kotlinx.android.synthetic.main.item_food_list.view.*
-import me.aravindraj.influxapp.data.model.Fnblist
+import me.aravindraj.influxapp.R
+import me.aravindraj.influxapp.data.model.FoodBeveragesItem
+
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
@@ -27,10 +25,9 @@ import me.aravindraj.influxapp.data.model.Fnblist
  */
 class FoodListAdapter(
     private val context: Context,
-    private val mValues: List<Fnblist>,
-    private val mListener: OnListFragmentInteractionListener?
+    private val mValues: List<FoodBeveragesItem>,
+    private val mListener: OnListFragmentInteractionListener
 ) : RecyclerView.Adapter<FoodListAdapter.ViewHolder>() {
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,28 +38,74 @@ class FoodListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mIdView.text = item.Name
-        holder.mContentView.text = item.ItemPrice
-        if(item.ImgUrl.isNotEmpty()&& context != null){
-
-                Glide.with(context!!)
-                    .load(item.ImgUrl)
-                    .transform(   CenterCrop(),GranularRoundedCorners(30f, 30f, 0f, 0f))
-                    .into(holder.mImgView)
-
-
+        holder.mNameTxtView.text = item.itemName
+        holder.mCountTxtView.text = item.count.toString()
+        if (item.imageURL.isNotEmpty() && context != null) {
+            Glide.with(context!!)
+                .load(item.imageURL)
+                .transform(CenterCrop(), GranularRoundedCorners(30f, 30f, 0f, 0f))
+                .into(holder.mImgView)
         }
+        if (item.subitems.isEmpty()) {
+            holder.mRadioGroup.visibility = GONE
+        } else {
+            holder.mRadioGroup.visibility = VISIBLE
+            item.itemPrice = item.subitems[0].SubitemPrice
+            item.subitems.forEachIndexed { index, it ->
+                holder.mRadioGroup.visibility = VISIBLE
+                val mRadioButton = RadioButton(context)
+                mRadioButton.setBackgroundResource(R.drawable.ic_txt_bg_selector)
+                mRadioButton.setButtonDrawable(null)
+                mRadioButton.setTextColor(context.getColorStateList(R.color.ic_txt_color_selector));
+                mRadioButton.setText(it.Name)
+                mRadioButton.isAllCaps = true
+                val params = RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(12, 8, 12, 8)
+                mRadioButton.layoutParams = params
+                mRadioButton.id = index
+                mRadioButton.tag = it.VistaSubFoodItemId
+                if (index == 0) {
+                    mRadioButton.isChecked = true
+                }
+                holder.mRadioGroup.addView(mRadioButton)
+            }
+        }
+        holder.mPriceTxtView.text = item.itemPrice
+        holder.mPlusBtn.setOnClickListener {
+            item.count = item.count+1
+            holder.mCountTxtView.text = item.count.toString()
+            mListener.onFoodAdd(item.vistaFoodItemId)
+        }
+        holder.mMinusBtn.setOnClickListener {
+            if (item.count > 0) {
+                item.count = item.count-1
+                holder.mCountTxtView.text = item.count.toString()
+            }
+            mListener.onFoodRemove(item.vistaFoodItemId)
+        }
+        holder.mRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+            Log.e("RadioGroup", "=" + checkedId)
+            item.itemPrice = item.subitems[checkedId].SubitemPrice
+            holder.mPriceTxtView.text = item.itemPrice
+            item.selectedSubItemId = item.subitems[checkedId].VistaSubFoodItemId
+            mListener.onSubFoodItemChanged(item.vistaFoodItemId, item.selectedSubItemId, item.selectedSubItemName, item.selectedSubItemPrice)
+        }
+
 
     }
 
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.txtViewName
-        val mContentView: TextView = mView.txtViewPrice
+        val mNameTxtView: TextView = mView.txtViewName
+        val mPriceTxtView: TextView = mView.txtViewPrice
         val mImgView: ImageView = mView.imageView
-        override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
-        }
+        val mPlusBtn: ImageButton = mView.btnPlus
+        val mMinusBtn: ImageButton = mView.btnMinus
+        val mCountTxtView: TextView = mView.txtCount
+        val mRadioGroup: RadioGroup = mView.radioGroup
     }
 }

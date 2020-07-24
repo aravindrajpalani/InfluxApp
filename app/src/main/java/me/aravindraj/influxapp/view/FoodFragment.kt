@@ -1,28 +1,28 @@
 package me.aravindraj.influxapp.view
 
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import me.aravindraj.influxapp.R
-import me.aravindraj.influxapp.data.model.Fnblist
+import me.aravindraj.influxapp.data.model.FoodBeveragesItem
+import me.aravindraj.influxapp.viewmodel.MainViewModel
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [FoodFragment.OnListFragmentInteractionListener] interface.
- */
-class FoodFragment(private val fnblist: List<Fnblist>) : Fragment() {
+class FoodFragment(private val foodBeveragesList: List<FoodBeveragesItem>) : Fragment() {
+
+
+    private val mainViewModel: MainViewModel by activityViewModels()
+
 
     // TODO: Customize parameters
     private var columnCount = 1
 
-    private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +30,8 @@ class FoodFragment(private val fnblist: List<Fnblist>) : Fragment() {
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+
+
     }
 
     override fun onCreateView(
@@ -45,41 +47,32 @@ class FoodFragment(private val fnblist: List<Fnblist>) : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = FoodListAdapter(context,fnblist, listener)
+                adapter = FoodListAdapter(
+                    context,
+                    foodBeveragesList,
+                    object : OnListFragmentInteractionListener {
+                        override fun onFoodAdd(foodItemId: String) {
+                            mainViewModel.onFoodAdd(foodItemId)
+
+                        }
+
+                        override fun onFoodRemove(foodItemId: String) {
+                        }
+
+                        override fun onSubFoodItemChanged(
+                            foodItemId: String,
+                            subFoodItemId: String,
+                            subFoodItemName: String,
+                            subFoodItemPrice: String
+                        ) {
+                        }
+
+                    })
             }
         }
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson
-     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnListFragmentInteractionListener {
-        fun onFoodAdd()
-        fun onFoodRemove()
-    }
 
     companion object {
 

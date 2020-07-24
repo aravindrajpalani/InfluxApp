@@ -13,20 +13,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import me.aravindraj.influxapp.R
 import me.aravindraj.influxapp.data.api.ApiHelper
 import me.aravindraj.influxapp.data.api.RetrofitBuilder
+import me.aravindraj.influxapp.data.model.FoodBeveragesItem
 import me.aravindraj.influxapp.utils.Status
 import me.aravindraj.influxapp.viewmodel.MainViewModel
 import me.aravindraj.influxapp.viewmodel.ViewModelFactory
 
-class MainActivity : AppCompatActivity(),
-    FoodFragment.OnListFragmentInteractionListener {
-    override fun onFoodAdd() {
+class MainActivity : AppCompatActivity(){
 
-
-    }
-
-    override fun onFoodRemove() {
-
-    }
 
 
     private lateinit var adapter: ViewPagerAdapter
@@ -55,7 +48,24 @@ class MainActivity : AppCompatActivity(),
                         resource.data?.let { data ->
                             if (data.status.Description.equals("OK")) {
                                 data.FoodList.forEach {
-                                    adapter.addFragment(FoodFragment(it.fnblist), it.TabName)
+                                    var foodBeveragesList: List<FoodBeveragesItem> =
+                                        it.fnblist.map { item ->
+                                            FoodBeveragesItem(
+                                                item.Cinemaid,
+                                                item.TabName,
+                                                item.ImageUrl,
+                                                item.ItemPrice,
+                                                item.Name,
+                                                item.VegClass,
+                                                item.VistaFoodItemId,
+                                                item.subitems,
+                                                "",
+                                                "",
+                                                "",
+                                                0
+                                            )
+                                        }
+                                    adapter.addFragment(FoodFragment(foodBeveragesList), it.TabName)
                                 }
                                 adapter.notifyDataSetChanged()
                             }

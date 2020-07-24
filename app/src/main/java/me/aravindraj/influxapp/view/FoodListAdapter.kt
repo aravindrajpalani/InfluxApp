@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import kotlinx.android.synthetic.main.item_food_list.view.*
 import me.aravindraj.influxapp.R
-import me.aravindraj.influxapp.data.model.FoodBeveragesItem
+import me.aravindraj.influxapp.data.model.Fnblist
 
 
 /**
@@ -25,7 +25,7 @@ import me.aravindraj.influxapp.data.model.FoodBeveragesItem
  */
 class FoodListAdapter(
     private val context: Context,
-    private val mValues: List<FoodBeveragesItem>,
+    private val mValues: List<Fnblist>,
     private val mListener: OnListFragmentInteractionListener
 ) : RecyclerView.Adapter<FoodListAdapter.ViewHolder>() {
 
@@ -38,11 +38,11 @@ class FoodListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mNameTxtView.text = item.itemName
-        holder.mCountTxtView.text = item.count.toString()
-        if (item.imageURL.isNotEmpty() && context != null) {
+        holder.mNameTxtView.text = item.Name
+        holder.mCountTxtView.text = item.quantity.toString()
+        if (item.ImgUrl.isNotEmpty() && context != null) {
             Glide.with(context!!)
-                .load(item.imageURL)
+                .load(item.ImgUrl)
                 .transform(CenterCrop(), GranularRoundedCorners(30f, 30f, 0f, 0f))
                 .into(holder.mImgView)
         }
@@ -50,7 +50,7 @@ class FoodListAdapter(
             holder.mRadioGroup.visibility = GONE
         } else {
             holder.mRadioGroup.visibility = VISIBLE
-            item.itemPrice = item.subitems[0].SubitemPrice
+            item.ItemPrice = item.subitems[0].SubitemPrice
             item.subitems.forEachIndexed { index, it ->
                 holder.mRadioGroup.visibility = VISIBLE
                 val mRadioButton = RadioButton(context)
@@ -73,25 +73,24 @@ class FoodListAdapter(
                 holder.mRadioGroup.addView(mRadioButton)
             }
         }
-        holder.mPriceTxtView.text = item.itemPrice
+        holder.mPriceTxtView.text = item.ItemPrice
         holder.mPlusBtn.setOnClickListener {
-            item.count = item.count+1
-            holder.mCountTxtView.text = item.count.toString()
-            mListener.onFoodAdd(item.vistaFoodItemId)
+            holder.mCountTxtView.text = (item.quantity+1).toString()
+            mListener.onFoodAdd(item.VistaFoodItemId)
         }
         holder.mMinusBtn.setOnClickListener {
-            if (item.count > 0) {
-                item.count = item.count-1
-                holder.mCountTxtView.text = item.count.toString()
+            if (item.quantity > 0) {
+                holder.mCountTxtView.text = (item.quantity-1).toString()
+                mListener.onFoodRemove(item.VistaFoodItemId)
             }
-            mListener.onFoodRemove(item.vistaFoodItemId)
+
         }
         holder.mRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             Log.e("RadioGroup", "=" + checkedId)
-            item.itemPrice = item.subitems[checkedId].SubitemPrice
-            holder.mPriceTxtView.text = item.itemPrice
-            item.selectedSubItemId = item.subitems[checkedId].VistaSubFoodItemId
-            mListener.onSubFoodItemChanged(item.vistaFoodItemId, item.selectedSubItemId, item.selectedSubItemName, item.selectedSubItemPrice)
+            item.ItemPrice = item.subitems[checkedId].SubitemPrice
+            holder.mPriceTxtView.text = item.ItemPrice
+            item.selectedSubFoodItemId = item.subitems[checkedId].VistaSubFoodItemId
+            mListener.onSubFoodItemChanged(item.VistaFoodItemId, item.selectedSubFoodItemId)
         }
 
 

@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.aravindraj.influxapp.R
+import me.aravindraj.influxapp.data.model.Fnblist
 import me.aravindraj.influxapp.data.model.FoodBeveragesItem
 import me.aravindraj.influxapp.viewmodel.MainViewModel
 
-class FoodFragment(private val foodBeveragesList: List<FoodBeveragesItem>) : Fragment() {
+class FoodFragment(private val foodBeveragesList: List<Fnblist>) : Fragment() {
 
 
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -53,19 +54,19 @@ class FoodFragment(private val foodBeveragesList: List<FoodBeveragesItem>) : Fra
                     object : OnListFragmentInteractionListener {
                         override fun onFoodAdd(foodItemId: String) {
                             mainViewModel.onFoodAdd(foodItemId)
-
                         }
 
                         override fun onFoodRemove(foodItemId: String) {
+                            mainViewModel.onFoodRemove(foodItemId)
                         }
 
                         override fun onSubFoodItemChanged(
                             foodItemId: String,
-                            subFoodItemId: String,
-                            subFoodItemName: String,
-                            subFoodItemPrice: String
+                            subFoodItemId: String
                         ) {
+                            mainViewModel.onSubFoodItemChanged(foodItemId, subFoodItemId)
                         }
+
 
                     })
             }

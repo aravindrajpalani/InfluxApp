@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import me.aravindraj.influxapp.R
 import me.aravindraj.influxapp.data.api.ApiHelper
@@ -18,10 +20,10 @@ import me.aravindraj.influxapp.utils.Status
 import me.aravindraj.influxapp.viewmodel.MainViewModel
 import me.aravindraj.influxapp.viewmodel.ViewModelFactory
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
 
 
-
+    private lateinit var modalBottomSheet: ModalBottomSheet
     private lateinit var adapter: ViewPagerAdapter
     private lateinit var viewModel: MainViewModel
 
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity(){
 
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
+         modalBottomSheet = ModalBottomSheet()
+
 
         viewModel = ViewModelProviders.of(
             this,
@@ -48,24 +52,7 @@ class MainActivity : AppCompatActivity(){
                         resource.data?.let { data ->
                             if (data.status.Description.equals("OK")) {
                                 data.FoodList.forEach {
-                                    var foodBeveragesList: List<FoodBeveragesItem> =
-                                        it.fnblist.map { item ->
-                                            FoodBeveragesItem(
-                                                item.Cinemaid,
-                                                item.TabName,
-                                                item.ImageUrl,
-                                                item.ItemPrice,
-                                                item.Name,
-                                                item.VegClass,
-                                                item.VistaFoodItemId,
-                                                item.subitems,
-                                                "",
-                                                "",
-                                                "",
-                                                0
-                                            )
-                                        }
-                                    adapter.addFragment(FoodFragment(foodBeveragesList), it.TabName)
+                                    adapter.addFragment(FoodFragment(it.fnblist), it.TabName)
                                 }
                                 adapter.notifyDataSetChanged()
                             }
@@ -83,8 +70,17 @@ class MainActivity : AppCompatActivity(){
             }
         })
 
+        viewModel.grandTotal.observe(this, Observer {
+            grandTotalTxtView.setText("AED $it")
+        })
 
+        grandTotalTxtView.setOnClickListener {
+
+            modalBottomSheet.show(supportFragmentManager, ModalBottomSheet.TAG)
+        }
     }
+
+
 }
 
 class ViewPagerAdapter(supportFragmentManager: FragmentManager) :

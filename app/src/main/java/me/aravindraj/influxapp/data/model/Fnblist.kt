@@ -13,5 +13,7 @@ data class Fnblist(
     val TabName: String,
     val VegClass: String,
     val VistaFoodItemId: String,
-    val subitems: List<Subitem>
+    val subitems: List<Subitem>,
+    var quantity: Int = 0,
+    var selectedSubFoodItemId: String
 )

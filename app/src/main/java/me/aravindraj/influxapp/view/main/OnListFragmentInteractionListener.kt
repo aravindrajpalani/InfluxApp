@@ -1,4 +1,4 @@
-package me.aravindraj.influxapp.view
+package me.aravindraj.influxapp.view.main
 
 interface OnListFragmentInteractionListener {
     fun onFoodAdd(foodItemId: String)

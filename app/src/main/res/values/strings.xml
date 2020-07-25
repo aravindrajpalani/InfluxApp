@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">InfluxApp</string>
+    <string name="fandb">F&amp;B</string>
+    <string name="fandbsummary">F&amp;B SUMMARY</string>
 </resources>

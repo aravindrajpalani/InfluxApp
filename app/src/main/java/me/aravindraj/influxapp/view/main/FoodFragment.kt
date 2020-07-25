@@ -1,4 +1,4 @@
-package me.aravindraj.influxapp.view
+package me.aravindraj.influxapp.view.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.aravindraj.influxapp.R
 import me.aravindraj.influxapp.data.model.Fnblist
-import me.aravindraj.influxapp.data.model.FoodBeveragesItem
 import me.aravindraj.influxapp.viewmodel.MainViewModel
 
 class FoodFragment(private val foodBeveragesList: List<Fnblist>) : Fragment() {

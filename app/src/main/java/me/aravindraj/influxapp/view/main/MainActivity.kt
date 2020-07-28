@@ -66,7 +66,11 @@ class MainActivity : AppCompatActivity() {
                         Log.e("Status", "success")
                     }
                     Status.ERROR -> {
+                        if (progressDialog != null && progressDialog.isShowing) {
+                            progressDialog.dismiss()
+                        } else {
 
+                        }
                         Snackbar.make(
                             parentLayout,
                             resource.message.toString(),
